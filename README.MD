@@ -248,6 +248,28 @@ When a user completes authentication, they will be redirected back to your site 
 </script>
 ```
 
+## Styling Options for the Panel
+
+The widget accepts several CSS class names for styling. Below is a summary of the available options:
+
+| Parameter            | Description                                                      |
+|----------------------|------------------------------------------------------------------|
+| `panelClass`         | Panel styling                                                    |
+| `buttonClass`        | All button styling                                               |
+| `headerClass`        | Header styling                                                   |
+| `title`              | Title of the panel                                               |
+| `titleClass`         | Title styling                                                    |
+| `logo`               | Logo URL                                                         |
+| `logoAlt`            | Logo alt text                                                    |
+| `logoClass`          | Logo styling                                                     |
+| `showConnectWallet`  | Boolean; false by default                                        |
+| `walletButtonText`   | Text for the wallet button                                       |
+| `walletButtonClass`  | Wallet button styling (defaults to following button styling)     |
+| `separatorText`      | Text displayed in the separator                                  |
+| `separatorTextClass` | Separator text styling                                           |
+| `separatorClass`     | Separator styling                                                |
+| `linkRowClass`       | Styling for the row containing login links                       |
+
 ## 📦 User Object Returned After Login
 
 When a user logs in successfully using Bedrock Passport, you will receive a user object similar to the following:
@@ -324,27 +346,7 @@ React.createElement(Bedrock.LoginPanel, {
 | `enableGoogleLogin`   | Enables Google login                     |
 | `enableEmailLogin`    | Enables email-based login                |
 
-## Styling Options for the Panel
 
-The widget accepts several CSS class names for styling. Below is a summary of the available options:
-
-| Parameter            | Description                                                      |
-|----------------------|------------------------------------------------------------------|
-| `panelClass`         | Panel styling                                                    |
-| `buttonClass`        | All button styling                                               |
-| `headerClass`        | Header styling                                                   |
-| `title`              | Title of the panel                                               |
-| `titleClass`         | Title styling                                                    |
-| `logo`               | Logo URL                                                         |
-| `logoAlt`            | Logo alt text                                                    |
-| `logoClass`          | Logo styling                                                     |
-| `showConnectWallet`  | Boolean; false by default                                        |
-| `walletButtonText`   | Text for the wallet button                                       |
-| `walletButtonClass`  | Wallet button styling (defaults to following button styling)     |
-| `separatorText`      | Text displayed in the separator                                  |
-| `separatorTextClass` | Separator text styling                                           |
-| `separatorClass`     | Separator styling                                                |
-| `linkRowClass`       | Styling for the row containing login links                       |
 
 ## 🛠 Troubleshooting
 
