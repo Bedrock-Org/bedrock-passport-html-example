@@ -15,6 +15,9 @@ Add the following code to your HTML page:
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://public-cdn-files.pages.dev/bedrock-passport.umd.js"></script>
 
+<!-- Optional: Include Tailwind CSS for styling -->
+<script src="https://cdn.tailwindcss.com"></script>
+
 <!-- 3. Initialize the widget -->
 <script>
   (function () {
