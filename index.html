@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bedrock Passport - Single Script Demo</title>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+    ></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        min-height: 100vh;
+        background-color: #f9fafb;
+      }
+      .gradient-text {
+        background: linear-gradient(45deg, #3b82f6, #10b981);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      body {
+        font-family: sans-serif;
+      }
+
+      #login-widget {
+        max-width: 480px;
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mx-auto px-4 py-12">
+      <div class="max-w-4xl mx-auto">
+        <header class="text-center mb-12">
+          <h1 class="text-4xl font-bold mb-4">
+            <span class="gradient-text">Bedrock Passport</span> Widget
+          </h1>
+          <p class="text-xl text-gray-600">Single Script Integration Demo</p>
+        </header>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <h2 class="text-2xl font-bold mb-4">About This Demo</h2>
+          <p class="mb-4">
+            This page demonstrates the Bedrock Passport authentication widget
+            loaded via a single script tag. This approach:
+          </p>
+          <ul class="list-disc ml-8 mb-6 space-y-2">
+            <li>Avoids race conditions by queueing initialization calls</li>
+            <li>Handles all dependencies (React, ReactDOM) automatically</li>
+            <li>
+              Provides a clean API similar to other popular widget libraries
+            </li>
+            <li>Connects to the real Bedrock authentication backend</li>
+          </ul>
+          <p class="text-sm text-gray-500 italic">
+            Note: This implementation uses the official Bedrock Passport SDK
+            loaded from CDN.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">Login Widget</h2>
+            <div id="login-widget" class="flex justify-center"></div>
+          </div>
+
+          <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">Implementation Code</h2>
+            <pre class="bg-gray-100 p-4 rounded text-sm overflow-x-auto">
+              
+&lt;script src="/dist/passport-widget.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  (function () {
+        // Ensure required globals are loaded
+        if (!window.React || !window.ReactDOM || !window.Bedrock) {
+          console.error(
+            'Error: React, ReactDOM, or the Bedrock library failed to load.'
+          );
+          document.getElementById('app-container').innerText =
+            'Error loading required libraries. Check console.';
+          return;
+        }
+
+        const React = window.React;
+        const ReactDOM = window.ReactDOM;
+        const Bedrock = window.Bedrock;
+
+        // --- Configuration ---
+        const bedrockConfig = {
+          baseUrl: 'https://api.bedrockpassport.com',
+          authCallbackUrl: 'http://localhost:5000',
+          tenantId: 'dev',
+          walletConnectId: '591d21ef88b24c6837599a5c2a0ce03d',
+        };
+
+        // --- Component Definitions ---
+
+        // Component to handle the authentication callback
+        function AuthCallbackProcessor() {
+          if (!Bedrock.useBedrockPassport) {
+            return React.createElement(
+              'p',
+              null,
+              'Error: Authentication missing.'
+            );
+          }
+
+          const { loginCallback } = Bedrock.useBedrockPassport();
+          const [message, setMessage] = React.useState(
+            'Processing authentication...'
+          );
+
+          React.useEffect(() => {
+            const processLogin = async (token, refreshToken) => {
+              try {
+                setMessage('Verifying tokens...');
+                const success = await loginCallback(token, refreshToken);
+                if (success) {
+                  setMessage('Login successful! Reloading app...');
+                  // Reload the current page *without* the query parameters
+                  // This will cause the script to run again, but the 'else' block will execute
+                  window.location.href = window.location.pathname; // Or just "/" if served at root
+                } else {
+                  setMessage(
+                    'Login failed via callback. Please try logging in again.'
+                  );
+                  console.error('loginCallback returned false.');
+                  // Optional: Add a button to redirect manually
+                }
+              } catch (error) {
+                setMessage(
+                  'An error occurred during login callback. Check console.'
+                );
+                console.error('Error during loginCallback:', error);
+              }
+            };
+
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+            const refreshToken = params.get('refreshToken');
+
+            if (token && refreshToken) {
+              processLogin(token, refreshToken);
+            } else {
+              // This should ideally not happen if this component is rendered correctly
+              setMessage('Tokens missing, cannot process callback.');
+              console.error(
+                'AuthCallbackProcessor rendered without tokens in URL.'
+              );
+            }
+          }, [loginCallback]);
+
+          return React.createElement('div', null, message);
+        }
+
+        // Component representing your main application UI
+        function MainApplication() {
+          // Example: Render the LoginPanel or other components
+          // You can use hooks here as well
+          if (!Bedrock.LoginPanel) {
+            return React.createElement(
+              'p',
+              null,
+              'LoginPanel component not found. App loaded.'
+            );
+          }
+
+          return React.createElement(
+            React.Fragment, // Use a fragment to render multiple elements
+            null,
+            React.createElement(Bedrock.LoginPanel, {
+              /* Props for LoginPanel */
+              buttonClass: 'hover:border-blue-500',
+              headerClass: 'flex justify-center',
+              logo: 'https://irp.cdn-website.com/4d865567/dms3rep/multi/bedrockxr-logo-colored-white-type-v1a-20241111.svg',
+              title: 'Sign in to',
+              titleClass: 'text-xl font-bold',
+              logoAlt: 'Bedrock Passport',
+              logoClass: 'ml-2 md:h-8 h-6',
+              panelClass: 'p-2 md:p-8 rounded-2xl max-w-96',
+              showConnectWallet: true,
+              walletButtonText: 'Connect Wallet',
+              separatorText: 'OR',
+              separatorTextClass: 'bg-blue-900 text-white text-xs',
+              separatorClass: 'bg-blue-900',
+            })
+          );
+        }
+
+        // --- Main Rendering Logic ---
+        const container = document.getElementById('login-widget');
+        if (!container) {
+          console.error('Error: Container element #login-widget not found.');
+          return;
+        }
+        const root = ReactDOM.createRoot(container);
+
+        // Check URL parameters to decide what to render
+        const params = new URLSearchParams(window.location.search);
+        const hasToken = params.has('token') && params.has('refreshToken');
+
+        let componentToRender;
+        if (hasToken) {
+          console.log('Tokens found in URL, rendering AuthCallbackProcessor.');
+          componentToRender = React.createElement(AuthCallbackProcessor);
+        } else {
+          console.log('No tokens found in URL, rendering MainApplication.');
+          componentToRender = React.createElement(MainApplication);
+        }
+
+        // Render the chosen component wrapped in the Provider
+        if (Bedrock.BedrockPassportProvider) {
+          root.render(
+            React.createElement(
+              Bedrock.BedrockPassportProvider,
+              bedrockConfig,
+              componentToRender // Render either AuthCallbackProcessor or MainApplication
+            )
+          );
+        } else {
+          console.error('Error: BedrockPassportProvider not found.');
+          container.innerText =
+            'Error: Cannot initialize authentication provider.';
+        }
+      })();
+&lt;/script&gt;</pre
+            >
+            <div
+              id="login-status"
+              class="mt-4 p-3 bg-blue-50 text-blue-800 rounded"
+            >
+              Not logged in
+            </div>
+          </div>
+        </div>
+
+        <!-- No menu needed since this is the only page -->
+      </div>
+    </div>
+
+    <script src="https://pub-207df93fde2444b39fcf6e4678e9a1ce.r2.dev/bedrock-passport.umd.js"></script>
+    <script>
+      (function () {
+        // Ensure required globals are loaded
+        if (!window.React || !window.ReactDOM || !window.Bedrock) {
+          console.error(
+            'Error: React, ReactDOM, or the Bedrock library failed to load.'
+          );
+          document.getElementById('app-container').innerText =
+            'Error loading required libraries. Check console.';
+          return;
+        }
+
+        const React = window.React;
+        const ReactDOM = window.ReactDOM;
+        const Bedrock = window.Bedrock;
+
+        // --- Configuration ---
+        const bedrockConfig = {
+          baseUrl: 'https://api.bedrockpassport.com',
+          authCallbackUrl: 'http://localhost:5000',
+          tenantId: 'dev',
+          walletConnectId: '591d21ef88b24c6837599a5c2a0ce03d',
+        };
+
+        // --- Component Definitions ---
+
+        // Component to handle the authentication callback
+        function AuthCallbackProcessor() {
+          if (!Bedrock.useBedrockPassport) {
+            return React.createElement(
+              'p',
+              null,
+              'Error: Authentication missing.'
+            );
+          }
+
+          const { loginCallback } = Bedrock.useBedrockPassport();
+          const [message, setMessage] = React.useState(
+            'Processing authentication...'
+          );
+
+          React.useEffect(() => {
+            const processLogin = async (token, refreshToken) => {
+              try {
+                setMessage('Verifying tokens...');
+                const success = await loginCallback(token, refreshToken);
+                if (success) {
+                  setMessage('Login successful! Reloading app...');
+                  // Reload the current page *without* the query parameters
+                  // This will cause the script to run again, but the 'else' block will execute
+                  window.location.href = window.location.pathname; // Or just "/" if served at root
+                } else {
+                  setMessage(
+                    'Login failed via callback. Please try logging in again.'
+                  );
+                  console.error('loginCallback returned false.');
+                  // Optional: Add a button to redirect manually
+                }
+              } catch (error) {
+                setMessage(
+                  'An error occurred during login callback. Check console.'
+                );
+                console.error('Error during loginCallback:', error);
+              }
+            };
+
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+            const refreshToken = params.get('refreshToken');
+
+            if (token && refreshToken) {
+              processLogin(token, refreshToken);
+            } else {
+              // This should ideally not happen if this component is rendered correctly
+              setMessage('Tokens missing, cannot process callback.');
+              console.error(
+                'AuthCallbackProcessor rendered without tokens in URL.'
+              );
+            }
+          }, [loginCallback]);
+
+          return React.createElement('div', null, message);
+        }
+
+        // Component representing your main application UI
+        function MainApplication() {
+          // Example: Render the LoginPanel or other components
+          // You can use hooks here as well
+          if (!Bedrock.LoginPanel) {
+            return React.createElement(
+              'p',
+              null,
+              'LoginPanel component not found. App loaded.'
+            );
+          }
+
+          return React.createElement(
+            React.Fragment, // Use a fragment to render multiple elements
+            null,
+            React.createElement(Bedrock.LoginPanel, {
+              /* Props for LoginPanel */
+              buttonClass: 'hover:border-blue-500',
+              headerClass: 'flex justify-center',
+              logo: 'https://irp.cdn-website.com/4d865567/dms3rep/multi/bedrockxr-logo-colored-white-type-v1a-20241111.svg',
+              title: 'Sign in to',
+              titleClass: 'text-xl font-bold',
+              logoAlt: 'Bedrock Passport',
+              logoClass: 'ml-2 md:h-8 h-6',
+              panelClass: 'p-2 md:p-8 rounded-2xl max-w-96',
+              showConnectWallet: true,
+              walletButtonText: 'Connect Wallet',
+              separatorText: 'OR',
+              separatorTextClass: 'bg-blue-900 text-white text-xs',
+              separatorClass: 'bg-blue-900',
+            })
+          );
+        }
+
+        // --- Main Rendering Logic ---
+        const container = document.getElementById('login-widget');
+        if (!container) {
+          console.error('Error: Container element #login-widget not found.');
+          return;
+        }
+        const root = ReactDOM.createRoot(container);
+
+        // Check URL parameters to decide what to render
+        const params = new URLSearchParams(window.location.search);
+        const hasToken = params.has('token') && params.has('refreshToken');
+
+        let componentToRender;
+        if (hasToken) {
+          console.log('Tokens found in URL, rendering AuthCallbackProcessor.');
+          componentToRender = React.createElement(AuthCallbackProcessor);
+        } else {
+          console.log('No tokens found in URL, rendering MainApplication.');
+          componentToRender = React.createElement(MainApplication);
+        }
+
+        const loginStatus = document.getElementById('login-status');
+        if (loginStatus) loginStatus.textContent = 'Logged in!!';
+
+        // Render the chosen component wrapped in the Provider
+        if (Bedrock.BedrockPassportProvider) {
+          root.render(
+            React.createElement(
+              Bedrock.BedrockPassportProvider,
+              bedrockConfig,
+              componentToRender // Render either AuthCallbackProcessor or MainApplication
+            )
+          );
+        } else {
+          console.error('Error: BedrockPassportProvider not found.');
+          container.innerText =
+            'Error: Cannot initialize authentication provider.';
+        }
+      })();
+    </script>
+  </body>
+</html>
