@@ -1,4 +1,4 @@
-# Bedrock Passport Widget - HTML Integration Guide
+# Orange ID by Bedrock – Script Tag (HTML) Integration Guide
 
 This guide explains how to integrate the Bedrock Passport authentication widget into a standard HTML website without requiring React knowledge or build tools.
 
@@ -6,7 +6,6 @@ This guide explains how to integrate the Bedrock Passport authentication widget 
 
 Add the following code to your HTML page:
 
-```html
 <!-- 1. Create a container for the widget -->
 <div id="bedrock-login-widget"></div>
 
@@ -18,35 +17,51 @@ Add the following code to your HTML page:
 <!-- 3. Initialize the widget -->
 <script>
   (function () {
-    // Configuration for Bedrock Passport
     const bedrockConfig = {
-      baseUrl: 'https://api.bedrockpassport.com', // Replace with your endpoint
-      authCallbackUrl: window.location.origin, // Current site URL
-      tenantId: 'dev', // Replace with your tenant ID
-      walletConnectId: '591d21ef88b24c6837599a5c2a0ce03d', // Replace with your wallet connect ID
+      baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
+      authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
+      tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
     };
 
-    // Get container and create root
     const container = document.getElementById('bedrock-login-widget');
     const root = ReactDOM.createRoot(container);
 
-    // Render login widget
+    // Render login widget with grouped options:
     root.render(
       React.createElement(
         Bedrock.BedrockPassportProvider,
         bedrockConfig,
         React.createElement(Bedrock.LoginPanel, {
+          // Content options
           title: 'Sign in to',
-          logo: 'https://path-to-your-logo.svg', // Replace with your logo URL
-          logoAlt: 'Your App',
-          showConnectWallet: true,
+          logo: 'https://irp.cdn-website.com/e81c109a/dms3rep/multi/orange-web3-logo-v2a-20241018.svg',
+          logoAlt: 'Orange Web3',
           walletButtonText: 'Connect Wallet',
+          showConnectWallet: false,
+          separatorText: 'OR',
+
+          // Feature toggles
+          features: {
+            enableWalletConnect: false,
+            enableAppleLogin: true,
+            enableGoogleLogin: true,
+            enableEmailLogin: true,
+          },
+
+          // Style options
+          titleClass: 'text-xl font-bold',
+          logoClass: 'ml-2 md:h-8 h-6',
+          panelClass: 'container p-2 md:p-8 rounded-2xl max-w-[480px]',
+          buttonClass: 'hover:border-orange-500',
+          separatorTextClass: 'bg-orange-900 text-gray-500',
+          separatorClass: 'bg-orange-900',
+          linkRowClass: 'justify-center',
+          headerClass: 'justify-center',
         })
       )
     );
   })();
 </script>
-```
 
 ## Detailed Integration Guide
 
@@ -54,7 +69,6 @@ Add the following code to your HTML page:
 
 Create an HTML file with a container element where the widget will be rendered:
 
-```html
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -71,34 +85,26 @@ Create an HTML file with a container element where the widget will be rendered:
   </head>
   <body>
     <h1>Welcome to My App</h1>
-
     <!-- This div will contain the login widget -->
     <div id="bedrock-login-widget"></div>
-
-    <!-- Scripts will be added here -->
   </body>
 </html>
-```
 
 ### Step 2: Add Required Dependencies
 
-Add the React and ReactDOM libraries, along with the Bedrock Passport widget:
+Add the React and ReactDOM libraries, along with the Bedrock Passport widget, before the closing </body> tag:
 
-```html
-<!-- Add these scripts before the closing </body> tag -->
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://public-cdn-files.pages.dev/bedrock-passport.umd.js"></script>
-```
 
 ### Step 3: Initialize the Widget
 
-Add the initialization script:
+Add the following initialization script to your HTML file:
 
-```html
 <script>
   (function () {
-    // Make sure all required libraries are loaded
+    // Ensure required libraries are loaded
     if (!window.React || !window.ReactDOM || !window.Bedrock) {
       console.error('Error: Required libraries failed to load.');
       document.getElementById('bedrock-login-widget').innerText =
@@ -108,335 +114,236 @@ Add the initialization script:
 
     // Configuration for Bedrock Passport
     const bedrockConfig = {
-      baseUrl: 'https://apim-dev-bedrockpassport.azure-api.net/', // Replace with your endpoint
-      authCallbackUrl: window.location.origin, // Current site URL
-      tenantId: 'dev', // Replace with your tenant ID
-      walletConnectId: '591d21ef88b24c6837599a5c2a0ce03d', // Replace with your wallet connect ID
+      baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
+      authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
+      tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
     };
 
-    // Get container and create root
     const container = document.getElementById('bedrock-login-widget');
     const root = ReactDOM.createRoot(container);
 
-    // Render login widget
+    // Render login widget with grouped options:
     root.render(
       React.createElement(
         Bedrock.BedrockPassportProvider,
         bedrockConfig,
         React.createElement(Bedrock.LoginPanel, {
+          // Content options
           title: 'Sign in to',
-          logo: 'https://path-to-your-logo.svg', // Replace with your logo URL
-          logoAlt: 'Your App',
-          titleClass: 'text-xl font-bold',
-          logoClass: 'ml-2 h-8',
-          panelClass: 'p-6 rounded-lg shadow-md',
-          showConnectWallet: true,
+          logo: 'https://irp.cdn-website.com/e81c109a/dms3rep/multi/orange-web3-logo-v2a-20241018.svg',
+          logoAlt: 'Orange Web3',
           walletButtonText: 'Connect Wallet',
+          showConnectWallet: false,
           separatorText: 'OR',
-          separatorTextClass: 'text-gray-500 text-sm',
-          buttonClass: 'py-2 px-4 rounded hover:bg-gray-100',
+
+          // Feature toggles
+          features: {
+            enableWalletConnect: false,
+            enableAppleLogin: true,
+            enableGoogleLogin: true,
+            enableEmailLogin: true,
+          },
+
+          // Style options
+          titleClass: 'text-xl font-bold',
+          logoClass: 'ml-2 md:h-8 h-6',
+          panelClass: 'container p-2 md:p-8 rounded-2xl max-w-[480px]',
+          buttonClass: 'hover:border-orange-500',
+          separatorTextClass: 'bg-orange-900 text-gray-500',
+          separatorClass: 'bg-orange-900',
+          linkRowClass: 'justify-center',
+          headerClass: 'justify-center',
         })
       )
     );
   })();
 </script>
-```
 
 ### Step 4: Handle Authentication Callbacks
 
-When a user completes authentication, they will be redirected back to your site with `token` and `refreshToken` parameters in the URL. You need to handle these to complete the login process:
+When a user completes authentication, they will be redirected back to your site with `token` and `refreshToken` parameters in the URL. Add this script to handle the callback:
 
-```html
 <script>
   (function () {
     // Configuration (same as above)
     const bedrockConfig = {
-      baseUrl: 'https://apim-dev-bedrockpassport.azure-api.net/',
+      baseUrl: 'https://api.bedrockpassport.com',
       authCallbackUrl: window.location.origin,
-      tenantId: 'dev',
-      walletConnectId: '591d21ef88b24c6837599a5c2a0ce03d',
+      tenantId: 'orange-abc123',
     };
 
-    // Check if we're handling a callback
+    const container = document.getElementById('bedrock-login-widget');
+    const root = ReactDOM.createRoot(container);
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     const refreshToken = params.get('refreshToken');
 
-    // Container for widget
-    const container = document.getElementById('bedrock-login-widget');
-    const root = ReactDOM.createRoot(container);
-
     if (token && refreshToken) {
-      // We're handling a callback, render the callback processor
       root.render(
         React.createElement(
           Bedrock.BedrockPassportProvider,
           bedrockConfig,
-          React.createElement(CallbackProcessor, { token, refreshToken })
+          React.createElement(function CallbackProcessor() {
+            const { loginCallback } = Bedrock.useBedrockPassport();
+            React.useEffect(() => {
+              async function go() {
+                const success = await loginCallback(token, refreshToken);
+                if (success) {
+                  window.location.href = '/dashboard.html'; // Redirect to your dashboard page
+                } else {
+                  container.innerHTML = '<p>Login failed.</p>';
+                }
+              }
+              go();
+            }, []);
+            return React.createElement('div', null, 'Processing...');
+          })
         )
       );
     } else {
-      // Normal login flow, render the login panel
       root.render(
         React.createElement(
           Bedrock.BedrockPassportProvider,
           bedrockConfig,
           React.createElement(Bedrock.LoginPanel, {
-            // Login panel props (as shown above)
+            // Content options
             title: 'Sign in to',
-            logo: 'https://path-to-your-logo.svg',
-            // ...other props
+            logo: 'https://irp.cdn-website.com/e81c109a/dms3rep/multi/orange-web3-logo-v2a-20241018.svg',
+            logoAlt: 'Orange Web3',
+            walletButtonText: 'Connect Wallet',
+            showConnectWallet: false,
+            separatorText: 'OR',
+
+            // Feature toggles
+            features: {
+              enableWalletConnect: false,
+              enableAppleLogin: true,
+              enableGoogleLogin: true,
+              enableEmailLogin: true,
+            },
+
+            // Style options
+            titleClass: 'text-xl font-bold',
+            logoClass: 'ml-2 md:h-8 h-6',
+            panelClass: 'container p-2 md:p-8 rounded-2xl max-w-[480px]',
+            buttonClass: 'hover:border-orange-500',
+            separatorTextClass: 'bg-orange-900 text-gray-500',
+            separatorClass: 'bg-orange-900',
+            linkRowClass: 'justify-center',
+            headerClass: 'justify-center',
           })
         )
       );
     }
-
-    // Component to handle the callback
-    function CallbackProcessor(props) {
-      const { token, refreshToken } = props;
-
-      // Get the loginCallback function from Bedrock
-      const hookResult = Bedrock.useBedrockPassport();
-      const loginCallback = hookResult.loginCallback;
-
-      // Process the login
-      React.useEffect(() => {
-        async function processLogin() {
-          try {
-            // Show loading message
-            container.innerHTML = '<p>Processing login...</p>';
-
-            // Call the loginCallback function
-            const success = await loginCallback(token, refreshToken);
-
-            if (success) {
-              // Login successful
-              window.location.href = '/dashboard.html'; // Redirect to your dashboard page
-            } else {
-              // Login failed
-              container.innerHTML = '<p>Login failed. Please try again.</p>';
-            }
-          } catch (error) {
-            console.error('Login error:', error);
-            container.innerHTML = '<p>An error occurred during login.</p>';
-          }
-        }
-
-        processLogin();
-      }, []);
-
-      return React.createElement('div', null, 'Processing authentication...');
-    }
   })();
 </script>
+
+## 📦 User Object Returned After Login
+
+When a user logs in successfully using Bedrock Passport, you can access a structured user object like the following:
+
+```json
+{
+  "id": "clf8138x000045o01a4p2ajpi",
+  "email": "testuser@example.com",
+  "name": "Test User",
+  "displayName": "testname",
+  "role": "user",
+  "ethAddress": "0x1234567890abcdef1234567890abcdef12345678",
+  "picture": "https://cdn.example.com/images/sample_user.png",
+  "provider": "google",
+  "createdAt": "2025-04-07T06:21:36.674Z"
+}
 ```
 
-## Customization Options
+### Explanation of Fields
 
-### Styling
+| Key           | Description                                                 |
+|---------------|-------------------------------------------------------------|
+| `id`          | Unique Orange ID for the user                               |
+| `email`       | User's email address                                         |
+| `name`        | Full name from the provider                                  |
+| `displayName` | User-chosen display name                                       |
+| `role`        | User role (e.g., `user`, `admin`)                            |
+| `ethAddress`  | Ethereum wallet address (if connected)                       |
+| `picture`     | URL to the user’s profile picture                            |
+| `provider`    | Login method used (e.g., `google`, `apple`, `wallet`)        |
+| `createdAt`   | Timestamp of account creation                                |
 
-The widget accepts several CSS class names for styling:
+## ⚙️ Features Configuration
 
-```javascript
+You can customize which login methods to show by passing a `features` object to the `<LoginPanel>` component.
+
+### Example (React / NPM)
+
+```tsx
+<LoginPanel
+  ...
+  features={{
+    enableWalletConnect: true,
+    enableAppleLogin: true,
+    enableGoogleLogin: true,
+    enableEmailLogin: true,
+  }}
+/>
+```
+
+### Example (HTML / Script Tag)
+
+```js
 React.createElement(Bedrock.LoginPanel, {
-  // Content customization
-  title: 'Sign in to',
-  logo: 'https://path-to-your-logo.svg',
-  logoAlt: 'Your App',
-  showConnectWallet: true,
-  walletButtonText: 'Connect Wallet',
-  separatorText: 'OR',
-
-  // Styling classes
-  buttonClass: 'py-2 px-4 rounded hover:bg-gray-100',
-  headerClass: 'flex justify-center items-center mb-6',
-  titleClass: 'text-xl font-bold',
-  logoClass: 'ml-2 h-8',
-  panelClass: 'p-6 rounded-lg shadow-md bg-white',
-  separatorTextClass: 'text-gray-500 text-sm',
-  separatorClass: 'border-t border-gray-300',
-});
+  ...
+  features: {
+    enableWalletConnect: true,
+    enableAppleLogin: true,
+    enableGoogleLogin: true,
+    enableEmailLogin: true,
+  }
+})
 ```
 
-You can define these classes in your CSS stylesheet or include a CSS framework like Tailwind CSS.
+### Available Feature Flags
 
-### Complete Example
+| Feature               | Description                              |
+|-----------------------|------------------------------------------|
+| `enableWalletConnect` | Enables Web3 wallet login                |
+| `enableAppleLogin`    | Enables Apple ID login                   |
+| `enableGoogleLogin`   | Enables Google login                     |
+| `enableEmailLogin`    | Enables email-based login                |
 
-For a complete working example with authentication callback handling, see the full HTML file below:
+## Styling Options for the Panel
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bedrock Passport Demo</title>
-    <style>
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-          sans-serif;
-        background-color: #f5f5f5;
-        margin: 0;
-        padding: 0;
-      }
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-      }
-      .header {
-        text-align: center;
-        margin-bottom: 2rem;
-      }
-      #bedrock-login-widget {
-        max-width: 400px;
-        margin: 0 auto;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <h1>Bedrock Passport Demo</h1>
-        <p>
-          This demonstrates integrating the Bedrock Passport widget in a plain
-          HTML page.
-        </p>
-      </div>
+The widget accepts several CSS class names for styling. Below is a summary of the available options:
 
-      <div id="bedrock-login-widget"></div>
-    </div>
+| Parameter            | Description                                                      |
+|----------------------|------------------------------------------------------------------|
+| `panelClass`         | Panel styling                                                    |
+| `buttonClass`        | All button styling                                               |
+| `headerClass`        | Header styling                                                   |
+| `title`              | Title of the panel                                               |
+| `titleClass`         | Title styling                                                    |
+| `logo`               | Logo URL                                                         |
+| `logoAlt`            | Logo alt text                                                    |
+| `logoClass`          | Logo styling                                                     |
+| `showConnectWallet`  | Boolean; false by default                                        |
+| `walletButtonText`   | Text for the wallet button                                       |
+| `walletButtonClass`  | Wallet button styling (defaults to following button styling)     |
+| `separatorText`      | Text displayed in the separator                                  |
+| `separatorTextClass` | Separator text styling                                           |
+| `separatorClass`     | Separator styling                                                |
+| `linkRowClass`       | Styling for the row containing login links                       |
 
-    <!-- Required Dependencies -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://public-cdn-files.pages.dev/bedrock-passport.umd.js"></script>
+## 🛠 Troubleshooting
 
-    <!-- Initialization Script -->
-    <script>
-      (function () {
-        // Ensure required libraries are loaded
-        if (!window.React || !window.ReactDOM || !window.Bedrock) {
-          console.error('Error: Required libraries failed to load.');
-          document.getElementById('bedrock-login-widget').innerHTML =
-            '<div style="color: red; text-align: center;">Error loading authentication widget. Please check your internet connection.</div>';
-          return;
-        }
+- **Widget not appearing?**  
+  Open your browser's developer tools and check for missing scripts or React errors.
 
-        // Configuration
-        const bedrockConfig = {
-          baseUrl: 'https://apim-dev-bedrockpassport.azure-api.net/',
-          authCallbackUrl: window.location.origin,
-          tenantId: 'dev',
-          walletConnectId: '591d21ef88b24c6837599a5c2a0ce03d',
-        };
+- **Authentication callback not working?**  
+  Verify that `authCallbackUrl` matches the one registered on the platform and that URL parameters (`token` and `refreshToken`) are handled correctly.
 
-        // Container for widget
-        const container = document.getElementById('bedrock-login-widget');
-        const root = ReactDOM.createRoot(container);
+- **Styling issues?**  
+  Ensure Tailwind CSS is loaded or replace the class names with your custom CSS definitions.
 
-        // Check if we're handling a callback
-        const params = new URLSearchParams(window.location.search);
-        const token = params.get('token');
-        const refreshToken = params.get('refreshToken');
+---
 
-        if (token && refreshToken) {
-          // We're handling a callback
-          // Create the callback processor component
-          function AuthCallbackProcessor() {
-            const { loginCallback } = Bedrock.useBedrockPassport();
-            const [message, setMessage] = React.useState(
-              'Processing authentication...'
-            );
-
-            React.useEffect(() => {
-              async function processLogin() {
-                try {
-                  setMessage('Verifying tokens...');
-                  const success = await loginCallback(token, refreshToken);
-
-                  if (success) {
-                    setMessage('Login successful! Redirecting...');
-                    // Remove token parameters from URL and redirect
-                    window.history.replaceState(
-                      {},
-                      document.title,
-                      window.location.pathname
-                    );
-                    setTimeout(() => {
-                      // Redirect or refresh page as needed
-                      window.location.reload();
-                    }, 1000);
-                  } else {
-                    setMessage('Authentication failed. Please try again.');
-                  }
-                } catch (error) {
-                  console.error('Login error:', error);
-                  setMessage('An error occurred during login.');
-                }
-              }
-
-              processLogin();
-            }, [loginCallback]);
-
-            return React.createElement(
-              'div',
-              { style: { textAlign: 'center', padding: '1rem' } },
-              message
-            );
-          }
-
-          // Render callback processor
-          root.render(
-            React.createElement(
-              Bedrock.BedrockPassportProvider,
-              bedrockConfig,
-              React.createElement(AuthCallbackProcessor)
-            )
-          );
-        } else {
-          // Normal login flow
-          root.render(
-            React.createElement(
-              Bedrock.BedrockPassportProvider,
-              bedrockConfig,
-              React.createElement(Bedrock.LoginPanel, {
-                title: 'Welcome to',
-                logo: 'https://example.com/your-logo.svg',
-                logoAlt: 'Your App',
-                showConnectWallet: true,
-                walletButtonText: 'Connect Wallet',
-                separatorText: 'OR',
-              })
-            )
-          );
-        }
-      })();
-    </script>
-  </body>
-</html>
-```
-
-## Troubleshooting
-
-### Widget Not Appearing
-
-- Check browser console for errors
-- Verify all script tags are loading properly
-- Ensure the container element exists with the correct ID
-
-### Authentication Callback Not Working
-
-- Verify the `authCallbackUrl` matches your site's URL
-- Check that you're properly handling the token and refreshToken URL parameters
-- Test with console.log statements to debug the callback flow
-
-### Styling Issues
-
-- The widget uses minimal default styling
-- Apply custom styles using the class props or global CSS
-- For complete styling control, you may need to add a CSS framework
+You're now ready to integrate Orange ID by Bedrock into your HTML project using only script tags!
