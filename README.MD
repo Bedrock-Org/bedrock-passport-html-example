@@ -248,6 +248,194 @@ When a user completes authentication, they will be redirected back to your site 
 </script>
 ```
 
+## Complete Example
+For a complete working example with authentication callback handling, see the full HTML file below:
+
+```html
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orange ID Demo</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    #bedrock-login-widget {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Orange ID Demo</h1>
+      <p>
+        This demonstrates integrating the Orange ID widget in a plain
+        HTML page.
+      </p>
+    </div>
+
+    <div id="bedrock-login-widget"></div>
+  </div>
+
+  <!-- Required Dependencies -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://public-cdn-files.pages.dev/bedrock-passport.umd.js"></script>
+  <!-- Optional: Include Tailwind CSS for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Initialization Script -->
+  <script>
+    (function () {
+      // Ensure required libraries are loaded
+      if (!window.React || !window.ReactDOM || !window.Bedrock) {
+        console.error('Error: Required libraries failed to load.');
+        document.getElementById('bedrock-login-widget').innerHTML =
+          '<div style="color: red; text-align: center;">Error loading authentication widget. Please check your internet connection.</div>';
+        return;
+      }
+
+      // Configuration
+      const bedrockConfig = {
+        baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
+        authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
+        tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
+      };
+
+      // Container for widget
+      const container = document.getElementById('bedrock-login-widget');
+      const root = ReactDOM.createRoot(container);
+
+      // Check if we're handling a callback
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      const refreshToken = params.get('refreshToken');
+
+      if (token && refreshToken) {
+        // We're handling a callback
+        // Create the callback processor component
+        function AuthCallbackProcessor() {
+          const {loginCallback} = Bedrock.useBedrockPassport();
+          const [message, setMessage] = React.useState(
+            'Processing authentication...'
+          );
+
+          React.useEffect(() => {
+            async function processLogin() {
+              try {
+                setMessage('Verifying tokens...');
+                const success = await loginCallback(token, refreshToken);
+
+                if (success) {
+                  setMessage('Login successful! Redirecting...');
+                  // Remove token parameters from URL and redirect
+                  window.history.replaceState(
+                    {},
+                    document.title,
+                    window.location.pathname
+                  );
+                  setTimeout(() => {
+                    // Redirect or refresh page as needed
+                    window.location.reload();
+                  }, 1000);
+                } else {
+                  setMessage('Authentication failed. Please try again.');
+                }
+              } catch (error) {
+                console.error('Login error:', error);
+                setMessage('An error occurred during login.');
+              }
+            }
+
+            processLogin();
+          }, [loginCallback]);
+
+          return React.createElement(
+            'div',
+            {style: {textAlign: 'center', padding: '1rem'}},
+            message
+          );
+        }
+
+        // Render callback processor
+        root.render(
+          React.createElement(
+            Bedrock.BedrockPassportProvider,
+            bedrockConfig,
+            React.createElement(AuthCallbackProcessor)
+          )
+        );
+      } else {
+        // Normal login flow
+        root.render(
+          React.createElement(
+            Bedrock.BedrockPassportProvider,
+            bedrockConfig,
+            React.createElement(Bedrock.LoginPanel, {
+              // Content options
+              title: "Sign in to",
+              logo: "https://irp.cdn-website.com/e81c109a/dms3rep/multi/orange-web3-logo-v2a-20241018.svg",
+              logoAlt: "Orange Web3",
+              walletButtonText: "Connect Wallet",
+              showConnectWallet: false,
+              separatorText: "OR",
+
+              // Feature toggles
+              features: {
+                enableWalletConnect: false,
+                enableAppleLogin: true,
+                enableGoogleLogin: true,
+                enableEmailLogin: true,
+              },
+
+              // Style options
+              titleClass: "text-xl font-bold",
+              logoClass: "ml-2 md:h-8 h-6",
+              panelClass: "container p-2 md:p-8 rounded-2xl max-w-[480px]",
+              buttonClass: "hover:border-orange-500",
+              separatorTextClass: "bg-orange-900 text-gray-500",
+              separatorClass: "bg-orange-900",
+              linkRowClass: "justify-center",
+              headerClass: "justify-center",
+            })
+          )
+        );
+      }
+    })();
+  </script>
+</body>
+
+</html>
+
+```
+
+
 ## Styling Options for the Panel
 
 The widget accepts several CSS class names for styling. Below is a summary of the available options:
