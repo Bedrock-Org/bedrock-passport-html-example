@@ -250,7 +250,7 @@ When a user completes authentication, they will be redirected back to your site 
 
 ## 📦 User Object Returned After Login
 
-When a user logs in successfully using Bedrock Passport, you can access a structured user object like the following:
+When a user logs in successfully using Bedrock Passport, you will receive a user object similar to the following:
 
 ```json
 {
@@ -258,9 +258,10 @@ When a user logs in successfully using Bedrock Passport, you can access a struct
   "email": "testuser@example.com",
   "name": "Test User",
   "displayName": "testname",
-  "role": "user",
-  "ethAddress": "0x1234567890abcdef1234567890abcdef12345678",
+  "bio": "This is a sample biography.",
   "picture": "https://cdn.example.com/images/sample_user.png",
+  "banner": "https://cdn.example.com/images/sample_user_banner.png",
+  "ethAddress": "0x1234567890abcdef1234567890abcdef12345678",
   "provider": "google",
   "createdAt": "2025-04-07T06:21:36.674Z"
 }
@@ -268,17 +269,19 @@ When a user logs in successfully using Bedrock Passport, you can access a struct
 
 ### Explanation of Fields
 
-| Key           | Description                                                 |
-|---------------|-------------------------------------------------------------|
-| `id`          | Unique Orange ID for the user                               |
-| `email`       | User's email address                                         |
-| `name`        | Full name from the provider                                  |
-| `displayName` | User-chosen display name                                       |
-| `role`        | User role (e.g., `user`, `admin`)                            |
-| `ethAddress`  | Ethereum wallet address (if connected)                       |
-| `picture`     | URL to the user’s profile picture                            |
-| `provider`    | Login method used (e.g., `google`, `apple`, `wallet`)        |
-| `createdAt`   | Timestamp of account creation                                |
+| Key           | Description                                                                                                                      |
+|---------------|----------------------------------------------------------------------------------------------------------------------------------|
+| `id`          | Unique Orange ID for the user.                                                                                                   |
+| `email`       | User's email address.                                                                                                            |
+| `name`        | Full name from the provider.                                                                                                     |
+| `displayName` | User-chosen display name. (Can be updated at [vibecodinglist.com/profile](https://vibecodinglist.com/profile))                     |
+| `bio`         | A brief biography of the user.                                                                                                   |
+| `picture`     | URL to the user's profile picture. (Can be updated at [vibecodinglist.com/profile](https://vibecodinglist.com/profile))             |
+| `banner`      | URL to the user's banner image. (Can be updated at [vibecodinglist.com/profile](https://vibecodinglist.com/profile))                |
+| `ethAddress`  | Ethereum wallet address (if connected).                                                                                          |
+| `provider`    | Login method used (e.g., `google`, `apple`, `wallet`).                                                                           |
+| `createdAt`   | Timestamp of account creation.                                                                                                   |
+
 
 ## ⚙️ Features Configuration
 
