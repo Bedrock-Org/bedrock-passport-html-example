@@ -6,6 +6,7 @@ This guide explains how to integrate the Bedrock Passport authentication widget 
 
 Add the following code to your HTML page:
 
+```html
 <!-- 1. Create a container for the widget -->
 <div id="bedrock-login-widget"></div>
 
@@ -62,6 +63,7 @@ Add the following code to your HTML page:
     );
   })();
 </script>
+```
 
 ## Detailed Integration Guide
 
@@ -69,6 +71,7 @@ Add the following code to your HTML page:
 
 Create an HTML file with a container element where the widget will be rendered:
 
+```html
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -89,19 +92,23 @@ Create an HTML file with a container element where the widget will be rendered:
     <div id="bedrock-login-widget"></div>
   </body>
 </html>
+```
 
 ### Step 2: Add Required Dependencies
 
 Add the React and ReactDOM libraries, along with the Bedrock Passport widget, before the closing </body> tag:
 
+```html
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://public-cdn-files.pages.dev/bedrock-passport.umd.js"></script>
+```
 
 ### Step 3: Initialize the Widget
 
 Add the following initialization script to your HTML file:
 
+```html
 <script>
   (function () {
     // Ensure required libraries are loaded
@@ -158,11 +165,13 @@ Add the following initialization script to your HTML file:
     );
   })();
 </script>
+```
 
 ### Step 4: Handle Authentication Callbacks
 
 When a user completes authentication, they will be redirected back to your site with `token` and `refreshToken` parameters in the URL. Add this script to handle the callback:
 
+```html
 <script>
   (function () {
     // Configuration (same as above)
@@ -237,6 +246,7 @@ When a user completes authentication, they will be redirected back to your site 
     }
   })();
 </script>
+```
 
 ## 📦 User Object Returned After Login
 
