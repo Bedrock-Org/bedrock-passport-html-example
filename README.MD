@@ -36,7 +36,7 @@ Add the following code to your HTML page:
         Bedrock.BedrockPassportProvider,
         bedrockConfig,
         React.createElement(Bedrock.LoginPanel, {
-          // Content options
+          // Content options — No changes needed unless specific customization is required
           title: 'Sign in to',
           logo: 'https://irp.cdn-website.com/e81c109a/dms3rep/multi/orange-web3-logo-v2a-20241018.svg',
           logoAlt: 'Orange Web3',
@@ -44,7 +44,7 @@ Add the following code to your HTML page:
           showConnectWallet: false,
           separatorText: 'OR',
 
-          // Feature toggles
+          // Feature toggles — Adjust these based on which login methods you want to support
           features: {
             enableWalletConnect: false,
             enableAppleLogin: true,
@@ -52,7 +52,7 @@ Add the following code to your HTML page:
             enableEmailLogin: true,
           },
 
-          // Style options
+          // Style options — Keep as-is unless UI tweaks are needed
           titleClass: 'text-xl font-bold',
           logoClass: 'ml-2 md:h-8 h-6',
           panelClass: 'container p-2 md:p-8 rounded-2xl max-w-[480px]',
@@ -105,6 +105,8 @@ Add the React and ReactDOM libraries, along with the Bedrock Passport widget, be
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://public-cdn-files.pages.dev/bedrock-passport.umd.js"></script>
+<!-- Optional: Include Tailwind CSS for styling -->
+<script src="https://cdn.tailwindcss.com"></script>
 ```
 
 ### Step 3: Initialize the Widget
@@ -138,7 +140,7 @@ Add the following initialization script to your HTML file:
         Bedrock.BedrockPassportProvider,
         bedrockConfig,
         React.createElement(Bedrock.LoginPanel, {
-          // Content options
+          // Content options — No changes needed unless specific customization is required
           title: 'Sign in to',
           logo: 'https://irp.cdn-website.com/e81c109a/dms3rep/multi/orange-web3-logo-v2a-20241018.svg',
           logoAlt: 'Orange Web3',
@@ -146,7 +148,7 @@ Add the following initialization script to your HTML file:
           showConnectWallet: false,
           separatorText: 'OR',
 
-          // Feature toggles
+          // Feature toggles — Adjust these based on which login methods you want to support
           features: {
             enableWalletConnect: false,
             enableAppleLogin: true,
@@ -154,7 +156,7 @@ Add the following initialization script to your HTML file:
             enableEmailLogin: true,
           },
 
-          // Style options
+          // Style options — Keep as-is unless UI tweaks are needed
           titleClass: 'text-xl font-bold',
           logoClass: 'ml-2 md:h-8 h-6',
           panelClass: 'container p-2 md:p-8 rounded-2xl max-w-[480px]',
@@ -218,7 +220,7 @@ When a user completes authentication, they will be redirected back to your site 
           Bedrock.BedrockPassportProvider,
           bedrockConfig,
           React.createElement(Bedrock.LoginPanel, {
-            // Content options
+            // Content options — No changes needed unless specific customization is required
             title: 'Sign in to',
             logo: 'https://irp.cdn-website.com/e81c109a/dms3rep/multi/orange-web3-logo-v2a-20241018.svg',
             logoAlt: 'Orange Web3',
@@ -226,7 +228,7 @@ When a user completes authentication, they will be redirected back to your site 
             showConnectWallet: false,
             separatorText: 'OR',
 
-            // Feature toggles
+            // Feature toggles — Adjust these based on which login methods you want to support
             features: {
               enableWalletConnect: false,
               enableAppleLogin: true,
@@ -234,7 +236,7 @@ When a user completes authentication, they will be redirected back to your site 
               enableEmailLogin: true,
             },
 
-            // Style options
+            // Style options — Keep as-is unless UI tweaks are needed
             titleClass: 'text-xl font-bold',
             logoClass: 'ml-2 md:h-8 h-6',
             panelClass: 'container p-2 md:p-8 rounded-2xl max-w-[480px]',
@@ -401,7 +403,7 @@ For a complete working example with authentication callback handling, see the fu
             Bedrock.BedrockPassportProvider,
             bedrockConfig,
             React.createElement(Bedrock.LoginPanel, {
-              // Content options
+              // Content options — No changes needed unless specific customization is required
               title: "Sign in to",
               logo: "https://irp.cdn-website.com/e81c109a/dms3rep/multi/orange-web3-logo-v2a-20241018.svg",
               logoAlt: "Orange Web3",
@@ -409,7 +411,7 @@ For a complete working example with authentication callback handling, see the fu
               showConnectWallet: false,
               separatorText: "OR",
 
-              // Feature toggles
+              // Feature toggles — Adjust these based on which login methods you want to support
               features: {
                 enableWalletConnect: false,
                 enableAppleLogin: true,
@@ -417,7 +419,7 @@ For a complete working example with authentication callback handling, see the fu
                 enableEmailLogin: true,
               },
 
-              // Style options
+              // Style options — Keep as-is unless UI tweaks are needed
               titleClass: "text-xl font-bold",
               logoClass: "ml-2 md:h-8 h-6",
               panelClass: "container p-2 md:p-8 rounded-2xl max-w-[480px]",
@@ -494,48 +496,6 @@ When a user logs in successfully using Bedrock Passport, you will receive a user
 | `ethAddress`  | Ethereum wallet address (if connected).                                                                                          |
 | `provider`    | Login method used (e.g., `google`, `apple`, `wallet`).                                                                           |
 | `createdAt`   | Timestamp of account creation.                                                                                                   |
-
-
-## ⚙️ Features Configuration
-
-You can customize which login methods to show by passing a `features` object to the `<LoginPanel>` component.
-
-### Example (React / NPM)
-
-```tsx
-<LoginPanel
-  ...
-  features={{
-    enableWalletConnect: true,
-    enableAppleLogin: true,
-    enableGoogleLogin: true,
-    enableEmailLogin: true,
-  }}
-/>
-```
-
-### Example (HTML / Script Tag)
-
-```js
-React.createElement(Bedrock.LoginPanel, {
-  ...
-  features: {
-    enableWalletConnect: true,
-    enableAppleLogin: true,
-    enableGoogleLogin: true,
-    enableEmailLogin: true,
-  }
-})
-```
-
-### Available Feature Flags
-
-| Feature               | Description                              |
-|-----------------------|------------------------------------------|
-| `enableWalletConnect` | Enables Web3 wallet login                |
-| `enableAppleLogin`    | Enables Apple ID login                   |
-| `enableGoogleLogin`   | Enables Google login                     |
-| `enableEmailLogin`    | Enables email-based login                |
 
 
 
