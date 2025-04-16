@@ -3,9 +3,8 @@
 This guide explains how to integrate the Bedrock Passport authentication widget into a standard HTML website without requiring React knowledge or build tools.
 
 > ⚠️ **Before You Start**  
-  
-To use the Orange ID widget, you must [create a Project ID](https://vibecodinglist.com/orange-id-integration) and **add it as your `tenantId`** in the configuration.  
-You'll also need to **whitelist your project URLs** to enable authentication on your domain.
+> To use the Orange ID widget, you must [create a Project ID](https://vibecodinglist.com/orange-id-integration) and **add it as your `tenantId`** in the configuration.  
+> You'll also need to **whitelist your project URLs** to enable authentication on your domain.
 
 ## Quick Start
 
