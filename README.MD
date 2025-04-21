@@ -468,6 +468,56 @@ The widget accepts several CSS class names for styling. Below is a summary of th
 | `separatorClass`     | Separator styling                                                |
 | `linkRowClass`       | Styling for the row containing login links                       |
 
+## Example: Signing Out a User
+ 
+You can render a simple “Sign Out” button that uses the same Bedrock hook to log the user out:
+ 
+```html
+<!-- place this wherever you want the button to appear -->
+<div id="signout-button"></div>
+ 
+<script>
+  (function () {
+    // grab your existing config object
+    const bedrockConfig = {
+      baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
+      authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
+      tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
+    };
+ 
+    // find the container and create a React root
+    const container = document.getElementById('signout-button');
+    const root = ReactDOM.createRoot(container);
+ 
+    // a small component to show a Sign Out button
+    function SignOutButton() {
+      const { user, signOut } = Bedrock.useBedrockPassport();
+      return React.createElement(
+        'button',
+        {
+          className: 'px-4 py-2 bg-red-600 text-white rounded',
+          onClick: async () => {
+            await signOut();
+            // reload or redirect after logout
+            window.location.reload();
+          }
+        },
+        user ? 'Sign Out' : 'Sign In'
+      );
+    }
+ 
+    // wrap in your provider
+    root.render(
+      React.createElement(
+        Bedrock.BedrockPassportProvider,
+        bedrockConfig,
+        React.createElement(SignOutButton)
+      )
+    );
+  })();
+</script>
+```
+
 ## 📦 User Object Returned After Login
 
 When a user logs in successfully using Bedrock Passport, you will receive a user object similar to the following:
