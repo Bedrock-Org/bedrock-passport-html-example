@@ -54,7 +54,7 @@ Add the following code to your HTML page:
             enableWalletConnect: false,
             enableAppleLogin: true,
             enableGoogleLogin: true,
-            enableEmailLogin: true,
+            enableEmailLogin: false,
           },
 
           // Style options — Keep as-is unless UI tweaks are needed
@@ -158,7 +158,7 @@ Add the following initialization script to your HTML file:
             enableWalletConnect: false,
             enableAppleLogin: true,
             enableGoogleLogin: true,
-            enableEmailLogin: true,
+            enableEmailLogin: false,
           },
 
           // Style options — Keep as-is unless UI tweaks are needed
@@ -238,7 +238,7 @@ When a user completes authentication, they will be redirected back to your site 
               enableWalletConnect: false,
               enableAppleLogin: true,
               enableGoogleLogin: true,
-              enableEmailLogin: true,
+              enableEmailLogin: false,
             },
 
             // Style options — Keep as-is unless UI tweaks are needed
@@ -421,7 +421,7 @@ For a complete working example with authentication callback handling, see the fu
                 enableWalletConnect: false,
                 enableAppleLogin: true,
                 enableGoogleLogin: true,
-                enableEmailLogin: true,
+                enableEmailLogin: false,
               },
 
               // Style options — Keep as-is unless UI tweaks are needed
