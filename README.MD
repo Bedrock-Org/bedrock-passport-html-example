@@ -4,7 +4,7 @@ This guide explains how to integrate the Bedrock Passport authentication widget 
 
 > ⚠️ **Before You Start**  
 >  
-> To use the Orange ID widget, you must [create a Project ID and API Key](https://vibecodinglist.com/orange-id-integration) and **add it as your `tenantId`** & `subscriptionKey`** in the configuration.  
+> To use the Orange ID widget, you must [create a Project ID and API Key](https://vibecodinglist.com/orange-id-integration) and **add it as your `tenantId` & `subscriptionKey`** in the configuration.  
 > You'll also need to **whitelist your project URLs via the link above** to enable authentication on your domain.
 
 ## Quick Start
@@ -30,6 +30,7 @@ Add the following code to your HTML page:
       baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
       authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
       tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
+      subscriptionKey: 'your_API_Key', // Your assigned API Key - you can request one at https://vibecodinglist.com/orange-id-integration
     };
 
     const container = document.getElementById('bedrock-login-widget');
@@ -134,6 +135,7 @@ Add the following initialization script to your HTML file:
       baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
       authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
       tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
+      subscriptionKey: 'your_API_Key', // Your assigned API Key - you can request one at https://vibecodinglist.com/orange-id-integration
     };
 
     const container = document.getElementById('bedrock-login-widget');
@@ -189,6 +191,7 @@ When a user completes authentication, they will be redirected back to your site 
       baseUrl: 'https://api.bedrockpassport.com',
       authCallbackUrl: window.location.origin,
       tenantId: 'orange-abc123',
+      subscriptionKey: 'your_API_Key', 
     };
 
     const container = document.getElementById('bedrock-login-widget');
@@ -336,6 +339,7 @@ For a complete working example with authentication callback handling, see the fu
         baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
         authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
         tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
+        subscriptionKey: 'your_API_Key', // Your assigned API Key - you can request one at https://vibecodinglist.com/orange-id-integration
       };
 
       // Container for widget
@@ -483,6 +487,7 @@ You can render a simple “Sign Out” button that uses the same Bedrock hook to
       baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
       authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
       tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
+      subscriptionKey: 'your_API_Key', // Your assigned API Key - you can request one at https://vibecodinglist.com/orange-id-integration
     };
  
     // find the container and create a React root
