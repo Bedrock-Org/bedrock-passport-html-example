@@ -558,6 +558,26 @@ When a user logs in successfully using Bedrock Passport, you will receive a user
 | `createdAt`   | Timestamp of account creation.                                                                                                   |
 
 
+## Server-Side Token Verification (Important for Custom Backends)
+
+After a user logs in with Orange ID, your app receives a **JWT (token)** that represents the authenticated user. If you're passing this token to a backend service (e.g. to fetch user-specific data), it's important to **verify that the token is valid and untampered**.
+
+To do this, your backend can call:
+
+```
+GET https://api.bedrockpassport.com/api/v1/auth/user
+```
+
+Pass the JWT as a Bearer token in the `Authorization` header:
+
+```
+Authorization: Bearer <token>
+```
+
+If the token is valid, the endpoint will return the user’s profile. If it's invalid or forged, it will return a `401 Unauthorized` response.
+
+> This is the recommended approach for verifying tokens until Bedrock publishes a **JWKS endpoint** that will allow local verification using standard JWT libraries (coming soon).
+
 
 ## 🛠 Troubleshooting
 
