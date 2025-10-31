@@ -4,7 +4,7 @@ This guide explains how to integrate the Bedrock Passport authentication widget 
 
 > ⚠️ **Before You Start**  
 >  
-> To use the Orange ID widget, you must [create a Project ID and API Key](https://vibecodinglist.com/orange-id-integration) and **add it as your `tenantId` & `subscriptionKey`** in the configuration.  
+> To use the Orange ID widget, you must [create a Project ID and API Key](http://developer.orangeweb3.com) and **add it as your `tenantId` & `subscriptionKey`** in the configuration.  
 > You'll also need to **whitelist your project URLs via the link above** to enable authentication on your domain.
 
 ## Quick Start
@@ -29,8 +29,8 @@ Add the following code to your HTML page:
     const bedrockConfig = {
       baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
       authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
-      tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
-      subscriptionKey: 'your_API_Key', // Your assigned API Key - you can request one at https://vibecodinglist.com/orange-id-integration
+      tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at the developer portal
+      subscriptionKey: 'your_API_Key', // Your assigned API Key - request in the developer portal
     };
 
     const container = document.getElementById('bedrock-login-widget');
@@ -134,8 +134,8 @@ Add the following initialization script to your HTML file:
     const bedrockConfig = {
       baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
       authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
-      tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
-      subscriptionKey: 'your_API_Key', // Your assigned API Key - you can request one at https://vibecodinglist.com/orange-id-integration
+      tenantId: 'orange-abc123', // Your assigned tenant ID - request in the developer portal
+      subscriptionKey: 'your_API_Key', // Your assigned API Key - request in the developer portal
     };
 
     const container = document.getElementById('bedrock-login-widget');
@@ -211,6 +211,11 @@ When a user completes authentication, they will be redirected back to your site 
               async function go() {
                 const success = await loginCallback(token, refreshToken);
                 if (success) {
+                  // Persist tokens for later logout
+                  try {
+                    localStorage.setItem('bedrock:accessToken', token);
+                    localStorage.setItem('bedrock:refreshToken', refreshToken);
+                  } catch (_) {}
                   window.location.href = '/dashboard.html'; // Redirect to your dashboard page
                 } else {
                   container.innerHTML = '<p>Login failed.</p>';
@@ -338,8 +343,8 @@ For a complete working example with authentication callback handling, see the fu
       const bedrockConfig = {
         baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
         authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
-        tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
-        subscriptionKey: 'your_API_Key', // Your assigned API Key - you can request one at https://vibecodinglist.com/orange-id-integration
+        tenantId: 'orange-abc123', // Your assigned tenant ID - request in the developer portal
+        subscriptionKey: 'your_API_Key', // Your assigned API Key - request in the developer portal
       };
 
       // Container for widget
@@ -367,6 +372,11 @@ For a complete working example with authentication callback handling, see the fu
                 const success = await loginCallback(token, refreshToken);
 
                 if (success) {
+                  // Persist tokens for later logout
+                  try {
+                    localStorage.setItem('bedrock:accessToken', token);
+                    localStorage.setItem('bedrock:refreshToken', refreshToken);
+                  } catch (_) {}
                   setMessage('Login successful! Redirecting...');
                   // Remove token parameters from URL and redirect
                   window.history.replaceState(
@@ -474,7 +484,7 @@ The widget accepts several CSS class names for styling. Below is a summary of th
 
 ## Example: Signing Out a User
  
-You can render a simple “Sign Out” button that uses the same Bedrock hook to log the user out:
+Use this minimal sign-out button. It calls the Logout API with the stored access token, then clears local auth state.
  
 ```html
 <!-- place this wherever you want the button to appear -->
@@ -484,10 +494,10 @@ You can render a simple “Sign Out” button that uses the same Bedrock hook to
   (function () {
     // grab your existing config object
     const bedrockConfig = {
-      baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
-      authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
-      tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
-      subscriptionKey: 'your_API_Key', // Your assigned API Key - you can request one at https://vibecodinglist.com/orange-id-integration
+      baseUrl: 'https://api.bedrockpassport.com',
+      authCallbackUrl: window.location.origin,
+      tenantId: 'orange-abc123',
+      subscriptionKey: 'your_API_Key',
     };
  
     // find the container and create a React root
@@ -502,8 +512,20 @@ You can render a simple “Sign Out” button that uses the same Bedrock hook to
         {
           className: 'px-4 py-2 bg-red-600 text-white rounded',
           onClick: async () => {
+            try {
+              const accessToken = localStorage.getItem('bedrock:accessToken');
+              if (accessToken) {
+                await fetch('https://api.bedrockpassport.com/api/v1/auth/logout', {
+                  method: 'POST',
+                  headers: { Authorization: `Bearer ${accessToken}` }
+                });
+              }
+            } catch (_) {}
             await signOut();
-            // reload or redirect after logout
+            try {
+              localStorage.removeItem('bedrock:accessToken');
+              localStorage.removeItem('bedrock:refreshToken');
+            } catch (_) {}
             window.location.reload();
           }
         },
@@ -522,6 +544,11 @@ You can render a simple “Sign Out” button that uses the same Bedrock hook to
   })();
 </script>
 ```
+
+### Logout Implementation with JWT Token
+
+To log out, **POST** `https://api.bedrockpassport.com/api/v1/auth/logout` with  
+`Authorization: Bearer <accessToken>`, then call `signOut()` to clear local auth state. Store `token`/`refreshToken` on the callback (see Step&nbsp;4) so the access token is available for the logout call.
 
 ## 📦 User Object Returned After Login
 
@@ -549,10 +576,10 @@ When a user logs in successfully using Bedrock Passport, you will receive a user
 | `id`          | Unique Orange ID for the user.                                                                                                   |
 | `email`       | User's email address.                                                                                                            |
 | `name`        | Full name from the provider.                                                                                                     |
-| `displayName` | User-chosen display name. (Can be updated at [vibecodinglist.com/profile](https://vibecodinglist.com/profile))                     |
+| `displayName` | User-chosen display name. (Can be updated at vibecodinglist.com/profile)                                                         |
 | `bio`         | A brief biography of the user.                                                                                                   |
-| `picture`     | URL to the user's profile picture. (Can be updated at [vibecodinglist.com/profile](https://vibecodinglist.com/profile))             |
-| `banner`      | URL to the user's banner image. (Can be updated at [vibecodinglist.com/profile](https://vibecodinglist.com/profile))                |
+| `picture`     | URL to the user's profile picture. (Can be updated at vibecodinglist.com/profile)                                                |
+| `banner`      | URL to the user's banner image. (Can be updated at vibecodinglist.com/profile)                                                   |
 | `ethAddress`  | Ethereum wallet address (if connected).                                                                                          |
 | `provider`    | Login method used (e.g., `google`, `apple`, `wallet`).                                                                           |
 | `createdAt`   | Timestamp of account creation.                                                                                                   |

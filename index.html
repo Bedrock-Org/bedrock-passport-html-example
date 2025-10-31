@@ -33,6 +33,12 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       padding: 1.5rem;
     }
+
+    #signout-button {
+      max-width: 400px;
+      margin: 1rem auto;
+      text-align: center;
+    }
   </style>
 </head>
 
@@ -47,6 +53,8 @@
     </div>
 
     <div id="bedrock-login-widget"></div>
+    <!-- Minimal Sign Out button (appears below) -->
+    <div id="signout-button"></div>
   </div>
 
   <!-- Required Dependencies -->
@@ -55,7 +63,8 @@
   <script src="https://public-cdn-files.pages.dev/bedrock-passport.umd.js"></script>
   <!-- Optional: Include Tailwind CSS for styling -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Initialization Script -->
+
+  <!-- Initialization & Callback Handling -->
   <script>
     (function () {
       // Ensure required libraries are loaded
@@ -70,7 +79,8 @@
       const bedrockConfig = {
         baseUrl: 'https://api.bedrockpassport.com', // Base API URL – no need to change this. Leave as is.
         authCallbackUrl: window.location.origin, // For production, ensure you have a dedicated auth callback page (e.g. /auth/callback)
-        tenantId: 'orange-abc123', // Your assigned tenant ID - you can request one at https://vibecodinglist.com/orange-id-integration
+        tenantId: 'orange-abc123', // Your assigned tenant ID
+        subscriptionKey: 'your_API_Key', // Your assigned API Key
       };
 
       // Container for widget
@@ -86,10 +96,8 @@
         // We're handling a callback
         // Create the callback processor component
         function AuthCallbackProcessor() {
-          const {loginCallback} = Bedrock.useBedrockPassport();
-          const [message, setMessage] = React.useState(
-            'Processing authentication...'
-          );
+          const { loginCallback } = Bedrock.useBedrockPassport();
+          const [message, setMessage] = React.useState('Processing authentication...');
 
           React.useEffect(() => {
             async function processLogin() {
@@ -98,17 +106,19 @@
                 const success = await loginCallback(token, refreshToken);
 
                 if (success) {
+                  // Persist tokens for logout API
+                  try {
+                    localStorage.setItem('bedrock:accessToken', token);
+                    localStorage.setItem('bedrock:refreshToken', refreshToken);
+                  } catch (_) {}
+
                   setMessage('Login successful! Redirecting...');
                   // Remove token parameters from URL and redirect
-                  window.history.replaceState(
-                    {},
-                    document.title,
-                    window.location.pathname
-                  );
+                  window.history.replaceState({}, document.title, window.location.pathname);
                   setTimeout(() => {
                     // Redirect or refresh page as needed
                     window.location.reload();
-                  }, 1000);
+                  }, 800);
                 } else {
                   setMessage('Authentication failed. Please try again.');
                 }
@@ -121,11 +131,7 @@
             processLogin();
           }, [loginCallback]);
 
-          return React.createElement(
-            'div',
-            {style: {textAlign: 'center', padding: '1rem'}},
-            message
-          );
+          return React.createElement('div', { style: { textAlign: 'center', padding: '1rem' } }, message);
         }
 
         // Render callback processor
@@ -151,7 +157,7 @@
               showConnectWallet: false,
               separatorText: "OR",
 
-              // Feature toggles
+              // Feature toggles (kept as provided)
               features: {
                 enableWalletConnect: false,
                 enableAppleLogin: true,
@@ -172,6 +178,68 @@
           )
         );
       }
+    })();
+  </script>
+
+  <!-- Minimal Sign Out Button (independent mount) -->
+  <script>
+    (function () {
+      if (!window.React || !window.ReactDOM || !window.Bedrock) return;
+
+      const container = document.getElementById('signout-button');
+      if (!container) return;
+      const root = ReactDOM.createRoot(container);
+
+      function SignOutButton() {
+        const { user, signOut } = Bedrock.useBedrockPassport();
+
+        async function handleLogout() {
+          try {
+            const accessToken = localStorage.getItem('bedrock:accessToken');
+            if (accessToken) {
+              await fetch('https://api.bedrockpassport.com/api/v1/auth/logout', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${accessToken}` }
+              });
+            }
+          } catch (e) {
+            console.warn('Logout API error (continuing):', e);
+          }
+
+          try {
+            await signOut();
+          } catch (_) {}
+
+          try {
+            localStorage.removeItem('bedrock:accessToken');
+            localStorage.removeItem('bedrock:refreshToken');
+          } catch (_) {}
+
+          window.location.reload();
+        }
+
+        return React.createElement(
+          Bedrock.BedrockPassportProvider,
+          {
+            baseUrl: 'https://api.bedrockpassport.com',
+            authCallbackUrl: window.location.origin,
+            tenantId: 'orange-abc123',
+            subscriptionKey: 'your_API_Key',
+          },
+          React.createElement(
+            'button',
+            {
+              className: 'px-4 py-2 bg-red-600 text-white rounded',
+              onClick: handleLogout,
+              disabled: !user,
+              title: user ? 'Sign out' : 'Sign in first'
+            },
+            user ? 'Sign Out' : 'Sign In'
+          )
+        );
+      }
+
+      root.render(React.createElement(SignOutButton));
     })();
   </script>
 </body>
