@@ -548,7 +548,7 @@ Use this minimal sign-out button. It calls the Logout API with the stored access
 ### Logout Implementation with JWT Token
 
 To log out, **POST** `https://api.bedrockpassport.com/api/v1/auth/logout` with  
-`Authorization: Bearer <accessToken>`, then call `signOut()` to clear local auth state. Store `token`/`refreshToken` on the callback (see Step&nbsp;4) so the access token is available for the logout call.
+`Authorization: Bearer <accessToken>`, then call `signOut()` to clear local auth state. Store `token`/`refreshToken` on the callback so the access token is available for the logout call.
 
 ## 📦 User Object Returned After Login
 
